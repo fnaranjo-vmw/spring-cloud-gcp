@@ -14,6 +14,15 @@ refer to the [commit
 history](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commits/main)
 on GitHub.
 
+## [4.8.5](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.8.4...v4.8.5) (2023-11-21)
+
+
+### Bug Fixes
+
+* add metrics sample to native CI ([#2345](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2345)) ([44d48df](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/44d48df4c56fc737f06d8e121b428b26aa309e8e))
+* disable profile `CI` when building reference docs ([#2367](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2367)) ([d207fd8](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/d207fd8cfeacc37dda65dfd70de156487dbf3a83))
+* GcpFirestoreEmulatorAutoConfiguration constructs invalid document parent ([#2348](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/issues/2348)) ([7e66d55](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/commit/7e66d55f8c48573b03494ad251535c466c63a70e))
+
 ## [4.8.4](https://github.com/GoogleCloudPlatform/spring-cloud-gcp/compare/v4.8.3...v4.8.4) (2023-11-09)
 
 
