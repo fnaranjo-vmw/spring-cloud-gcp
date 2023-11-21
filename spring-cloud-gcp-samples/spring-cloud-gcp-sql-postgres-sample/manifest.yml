@@ -1,0 +1,19 @@
+applications:
+- name: springboot-cloudsql-postgres
+  path: target/spring-cloud-gcp-sql-postgres-sample-4.8.4.jar
+  buildpack: https://github.com/cloudfoundry/java-buildpack.git
+  instances: 1
+  memory: 1G
+  services:
+  - my-own-gcp-pg-db
+  env:
+    JBP_CONFIG_OPEN_JDK_JRE: '{ jre: { version: 17.+ } }'
+    #JBP_CONFIG_SPRING_AUTO_RECONFIGURATION: '{ enabled: false }'
+
+    spring_cloud_gcp_sql_enabled: false
+
+    spring_datasource_username: '${vcap.services.csb-google-postgres.credentials.username}'
+    spring_datasource_password: '${vcap.services.csb-google-postgres.credentials.password}'
+    spring_datasource_url: '${vcap.services.csb-google-postgres.credentials.jdbcUrl}'
+    spring_sql_init_continue-on-error: true
+
