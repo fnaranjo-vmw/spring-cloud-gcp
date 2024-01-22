@@ -1,0 +1,20 @@
+applications:
+- name: springboot-cloudsql-mysql
+  path: target/spring-cloud-gcp-sql-mysql-sample-4.8.4.jar
+  buildpack: https://github.com/cloudfoundry/java-buildpack.git
+  instances: 1
+  memory: 1G
+  services:
+  - my-own-gcp-mysql-db
+  env:
+    KEYSTORE_PASSWORD: 'changeit'
+    JBP_CONFIG_OPEN_JDK_JRE: '{ jre: { version: 17.+ } }'
+    #JBP_CONFIG_SPRING_AUTO_RECONFIGURATION: '{ enabled: false }'
+
+    spring_cloud_gcp_sql_enabled: false
+    spring_cloud_gcp_core_enabled: false
+
+    spring_datasource_username: '${vcap.services.csb-google-mysql.credentials.username}'
+    spring_datasource_password: '${vcap.services.csb-google-mysql.credentials.password}'
+    spring_datasource_url: '${vcap.services.csb-google-mysql.credentials.jdbcUrl}'
+    spring_sql_init_continue-on-error: true
