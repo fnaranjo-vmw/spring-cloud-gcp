@@ -1,5 +1,8 @@
 # This script will be run automatically by the Cloud Foundry Java Buildpack before the app is launched
 
+# keytool is bundled in the java-buildpack however their location is not exported in the PATH by default.
+export PATH="$PATH:$(ls -d /app/.java-buildpack/*/bin/)"
+
 mkdir -p "$HOME/.mysql/"
 
 
