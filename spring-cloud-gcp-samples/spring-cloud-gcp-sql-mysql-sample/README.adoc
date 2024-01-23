@@ -18,6 +18,11 @@ What is described here is a workaround to overcome the fact that Spring Framewor
 
 6. Deploy the application by running `cf push`.
 
+7. Test your app by invoking the `getTuples` endpoint:
+```
+curl -v "$(cf app "springboot-cloudsql-mysql" | grep 'routes:' | cut -d ':' -f 2 | xargs)/getTuples"
+```
+
 == Disclaimer
 
 Notice that in `manifest.yml` we are specifying `spring_cloud_gcp_sql_enabled: false` and `spring_cloud_gcp_core_enabled: false`.

@@ -1,4 +1,21 @@
+#!/bin/this-script-should-be-sourced-not-executed-directly
 # This script will be run automatically by the Cloud Foundry Java Buildpack before the app is launched
+
+RESTORE_OPTIONS=$(set +o)
+set -euo pipefail
+
+# Trapping RETURN is necessary for sourced script, otherwise successful runs won't trigger the trap.
+trap 'catch $?' EXIT RETURN
+catch() {
+  eval "$RESTORE_OPTIONS"
+
+  if [ "$1" != "0" ]; then
+    >&2 cat .profile.log     # Some error occurred: cat logs to stderr.
+  else
+    cat .profile.log         # No error occurred: cat logs to stdout.
+  fi
+  rm .profile.log
+}
 
 # keytool is bundled in the java-buildpack however their location is not exported in the PATH by default.
 export PATH="$PATH:$(ls -d /app/.java-buildpack/*/bin/)"
@@ -10,6 +27,9 @@ echo "$VCAP_SERVICES" | jq -r '.["csb-google-mysql"][0].credentials.sslrootcert'
 echo "$VCAP_SERVICES" | jq -r '.["csb-google-mysql"][0].credentials.sslcert' > "$HOME/.mysql/client-cert.pem"
 echo "$VCAP_SERVICES" | jq -r '.["csb-google-mysql"][0].credentials.sslkey' > "$HOME/.mysql/client-key.pem"
 
+# keytool seems to be writing information messages to stderr.
+# To counteract it, redirect all outputs to a file and let the trap above cat the file to stdout/stderr based on the exit code.
+{
 keytool -importcert                       \
   -alias MySQLCACert                      \
   -file "$HOME/.mysql/ca.pem"             \
@@ -36,3 +56,8 @@ openssl pkcs8 -topk8 -inform PEM -in "$HOME/.mysql/client-key.pem" -outform DER 
 chmod 0600 "$HOME/.mysql/client-key.pem" "/$HOME/.mysql/client.pk8"
 
 export VCAP_SERVICES="$(echo "$VCAP_SERVICES" | jq '."csb-google-mysql"[0].credentials.jdbcUrl += "&trustCertificateKeyStoreUrl=file://\($ENV.HOME)/.mysql/truststore&trustCertificateKeyStorePassword=\($ENV.KEYSTORE_PASSWORD)&clientCertificateKeyStoreUrl=file://\($ENV.HOME)/.mysql/keystore&clientCertificateKeyStorePassword=\($ENV.KEYSTORE_PASSWORD)"')"
+
+rm "$HOME/.mysql/ca.pem"
+rm "$HOME/.mysql/client-cert.pem"
+rm "$HOME/.mysql/client-key.pem"
+} > .profile.log 2>&1
