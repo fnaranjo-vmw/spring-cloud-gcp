@@ -55,7 +55,7 @@ keytool -importkeystore                           \
 openssl pkcs8 -topk8 -inform PEM -in "$HOME/.mysql/client-key.pem" -outform DER -out "$HOME/.mysql/client.pk8" -v1 PBE-MD5-DES -nocrypt
 chmod 0600 "$HOME/.mysql/client-key.pem" "/$HOME/.mysql/client.pk8"
 
-export VCAP_SERVICES="$(echo "$VCAP_SERVICES" | jq '."csb-google-mysql"[0].credentials.jdbcUrl += "&trustCertificateKeyStoreUrl=file://\($ENV.HOME)/.mysql/truststore&trustCertificateKeyStorePassword=\($ENV.KEYSTORE_PASSWORD)&clientCertificateKeyStoreUrl=file://\($ENV.HOME)/.mysql/keystore&clientCertificateKeyStorePassword=\($ENV.KEYSTORE_PASSWORD)"')"
+export VCAP_SERVICES="$(echo "$VCAP_SERVICES" | jq --arg HOME "$HOME" --arg KEYSTORE_PASSWORD "$KEYSTORE_PASSWORD" '."csb-google-mysql"[0].credentials.jdbcUrl += "&trustCertificateKeyStoreUrl=file://\($HOME)/.mysql/truststore&trustCertificateKeyStorePassword=\($KEYSTORE_PASSWORD)&clientCertificateKeyStoreUrl=file://\($HOME)/.mysql/keystore&clientCertificateKeyStorePassword=\($KEYSTORE_PASSWORD)"')"
 
 rm "$HOME/.mysql/ca.pem"
 rm "$HOME/.mysql/client-cert.pem"
